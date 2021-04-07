@@ -19,6 +19,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController _controller = TextEditingController();
+  MyStream myStreamProvider2;
 
   /*void getServer() {
     setState(() {
@@ -36,6 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var myStreamProviderLength = Provider.of<MyStream>(context).response.length;
     var myStreamProvider = Provider.of<MyStream>(context).response;
+    //myStreamProvider2 = Provider.of<MyStream>(context, listen: false);
+    var myStreamProviderTextAlign = Provider.of<MyStream>(context).textAlign;
     return Scaffold(
       appBar: AppBar(
         title: Text('ChatRoom'),
@@ -67,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       margin: BubbleEdges.only(top: 12),
                       child: Text(
                         '${myStreamProvider[index]}',
-                        textAlign: TextAlign.right,
+                        textAlign: myStreamProviderTextAlign,
                         style: TextStyle(fontSize: 16.0),
                       ),
                     );
@@ -79,16 +82,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               SizedBox(
                 height: 20,
-              ),
-              StreamBuilder(
-                stream: widget.myStream,
-                builder: (context, snapshot) {
-                  return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24.0),
-                      child: Text('')
-                      //widget.myStreamText.getServerResponse().toString()),
-                      );
-                },
               ),
             ],
           ),
@@ -105,6 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void _sendMessage() {
     if (_controller.text.isNotEmpty) {
       widget.myStream.value.write(_controller.text);
+      var myStreamProvider = Provider.of<MyStream>(context, listen: false);
+      setState(() {
+        myStreamProvider.addResponse(_controller.text);
+      });
       _controller.clear();
     }
   }

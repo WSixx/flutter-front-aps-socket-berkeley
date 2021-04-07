@@ -24,6 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Stream broadcastStream;
   BehaviorSubject<Socket> s = BehaviorSubject<Socket>();
 
+  MyStream myStream;
+
   @override
   void dispose() {
     super.dispose();
@@ -89,6 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
               onPressed: () {
                 widget.channel.write('login lucas 123');
+                myStream.login = 'lucas';
                 /* if (getServerResponse() == 'Ok login' ||
                     getServerResponse() ==
                         'Welcome to dart-chat! There are 0 other clients online') {*/
@@ -115,10 +118,24 @@ class _LoginScreenState extends State<LoginScreen> {
   void getServer() {
     s.stream.listen((event) {
       //MyStream myStream = MyStream();
-      MyStream myStream = Provider.of<MyStream>(context, listen: false);
+      myStream = Provider.of<MyStream>(context, listen: false);
       event.listen((event) {
-        print('Login: ' + String.fromCharCodes(event).trim());
-        myStream.addResponse(String.fromCharCodes(event).trim());
+        String fromCharCodes = String.fromCharCodes(event)
+            .trim()
+            .replaceAll('[', '')
+            .replaceAll(']', ': ');
+
+        final split = fromCharCodes.split(' ');
+        final values = <int, String>{
+          for (int i = 0; i < split.length; i++) i: split[i]
+        };
+        var from = values[0];
+        var body = split.sublist(1);
+        /* var finalStr = body.reduce((value, element) {
+          return value + ' ' + element;
+        });*/
+        print('Login: ' + from.toString() + '-' + body.toString());
+        myStream.addResponse(fromCharCodes);
         print(myStream.itemsCount.toString());
       });
     });
