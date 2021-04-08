@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 class MyStream extends ChangeNotifier {
   List<String> _response = [];
+  List<String> _onlineLogins = [];
   Map<String, String> clientResponse = {};
   String login = '';
   bool _isLogin = false;
@@ -16,6 +17,16 @@ class MyStream extends ChangeNotifier {
   set isLogin(bool value) {
     _isLogin = value;
     notifyListeners();
+  }
+
+  int getOnlineLoginCount() {
+    return onlineLogins.length;
+  }
+
+  List<String> get onlineLogins => _onlineLogins;
+
+  set onlineLogins(List<String> value) {
+    _onlineLogins = value;
   }
 
   bool singIn() {
@@ -36,6 +47,15 @@ class MyStream extends ChangeNotifier {
   }
 
   void addResponse2(String key, String value) {
+    print('Value is:' + value);
+    print('Key is:' + key);
+    //key = '++' + key;
+    print(key.substring(2));
+    if (value.startsWith('++', 0)) {
+      print('é um login');
+      onlineLogins.add(key.substring(2));
+      notifyListeners();
+    }
     clientResponse[key + getRandString(5)] = value;
     notifyListeners();
   }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_aps/screens/chat_room_screen.dart';
 import 'package:flutter_aps/screens/home_screen.dart';
 import 'package:flutter_aps/stream.dart';
 import 'package:provider/provider.dart';
@@ -168,21 +169,31 @@ class _LoginScreenState extends State<LoginScreen> {
         var body = split.sublist(1);
         print('Login: ' + from.toString() + '-' + body.toString());
         if (from.contains('Ok')) {
-          print('Setou True');
           myStream.isLogin = true;
         }
         myStream.addResponse2(from, fromCharCodes);
-        //myStream.login = 'lucas';
       });
     });
     s.add(widget.channel);
   }
 
+  /*void navigator(String userLogin) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatRoomScreen(
+          channel: widget.channel,
+          myStream: s,
+          login: userLogin,
+        ),
+      ),
+    );
+  }*/
   void navigator(String userLogin) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => MyHomePage(
+        builder: (context) => HomeScreen(
           channel: widget.channel,
           myStream: s,
           login: userLogin,
