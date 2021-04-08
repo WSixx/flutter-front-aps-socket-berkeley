@@ -23,12 +23,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController loginController = TextEditingController();
 
   //Socket channel;
-  final SocketConnect connectSocket = SocketConnect();
-
   Stream broadcastStream;
   BehaviorSubject<Socket> s = BehaviorSubject<Socket>();
 
+  final _formKey = GlobalKey<FormState>();
+
   MyStream myStream;
+  bool isLogin = true;
 
   @override
   void dispose() {
@@ -37,86 +38,96 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getServer();
-
-    //channel = connectSocket.sock;
   }
 
   @override
   Widget build(BuildContext context) {
-    // MyStream myStream = MyStream(widget.channel);
+    final node = FocusScope.of(context);
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextFormField(
-                controller: loginController,
-                decoration: InputDecoration(
-                  labelText: 'User',
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                    borderSide: BorderSide(
-                      color: Colors.blue,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextFormField(
+                  controller: loginController,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => node.nextFocus(),
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    labelText: 'User',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      borderSide: BorderSide(
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length < 3) {
+                      return 'Digite o usuario';
+                    }
+                    return null;
+                  },
                 ),
               ),
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextFormField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                    borderSide: BorderSide(
-                      color: Colors.blue,
+              SizedBox(
+                height: 25,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextFormField(
+                  controller: passwordController,
+                  onEditingComplete: () => node.nextFocus(),
+                  obscureText: true,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      borderSide: BorderSide(
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length < 3) {
+                      return 'Digite uma senha';
+                    }
+                    return null;
+                  },
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                //  channel.write('login lucas 123');
-                widget.channel.write('login lucas 123');
-                myStream.login = 'lucas';
-                /* if (getServerResponse() == 'Ok login' ||
-                    getServerResponse() ==
-                        'Welcome to dart-chat! There are 0 other clients online') {*/
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyHomePage(
-                      // channel: widget.channel,
-                      channel: widget.channel, myStream: s,
-                      // myStreamText: myStream,
-                      //myStreamText: myStream,
-                    ),
-                  ),
-                );
-              },
-              child: Text('Entrar'),
-            ),
-          ],
+              SizedBox(
+                height: 20,
+              ),
+              isLogin
+                  ? ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          String userLogin =
+                              loginController.text.trim().toLowerCase();
+                          String userPassword =
+                              passwordController.text.trim().toLowerCase();
+                          signIn(userLogin, userPassword);
+                        }
+                      },
+                      child: Text('Entrar'),
+                    )
+                  : CircularProgressIndicator(),
+            ],
+          ),
         ),
       ),
     );
@@ -124,7 +135,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void getServer() {
     s.stream.listen((event) {
-      //MyStream myStream = MyStream();
       myStream = Provider.of<MyStream>(context, listen: false);
       event.listen((event) {
         String fromCharCodes = String.fromCharCodes(event)
@@ -139,11 +149,45 @@ class _LoginScreenState extends State<LoginScreen> {
         var from = values[0];
         var body = split.sublist(1);
         print('Login: ' + from.toString() + '-' + body.toString());
+        if (from.contains('Ok')) {
+          print('Setou True');
+          myStream.isLogin = true;
+        }
         myStream.addResponse2(from, fromCharCodes);
-        myStream.login = 'lucas';
-        print(myStream.itemsCount.toString());
+        //myStream.login = 'lucas';
       });
     });
     s.add(widget.channel);
+  }
+
+  void navigator(String userLogin) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyHomePage(
+          channel: widget.channel,
+          myStream: s,
+          login: userLogin,
+        ),
+      ),
+    );
+  }
+
+  void signIn(String userLogin, String userPassword) async {
+    widget.channel.write('login $userLogin $userPassword');
+    setState(() {
+      isLogin = false;
+    });
+    Future.delayed(Duration(seconds: 2)).then((_) {
+      if (myStream.singIn()) {
+        print('Entrou True');
+        myStream.login = '$userLogin';
+        navigator(userLogin);
+      } else {
+        setState(() {
+          isLogin = true;
+        });
+      }
+    });
   }
 }

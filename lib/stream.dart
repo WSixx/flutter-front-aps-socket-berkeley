@@ -7,16 +7,30 @@ class MyStream extends ChangeNotifier {
   List<String> _response = [];
   Map<String, String> clientResponse = {};
   String login = '';
+  bool _isLogin = false;
   int index;
   var textAlign;
+
+  bool get isLogin => _isLogin;
+
+  set isLogin(bool value) {
+    _isLogin = value;
+    notifyListeners();
+  }
+
+  bool singIn() {
+    if (isLogin == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   void addResponse(String value, int indexWidget) {
     if (value.contains('guest')) {
       toggleSelected(indexWidget);
       notifyListeners();
-    } else {
-      notifyListeners();
-    }
+    } else {}
     _response.add(value);
     notifyListeners();
   }

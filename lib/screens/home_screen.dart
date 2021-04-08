@@ -12,7 +12,9 @@ class MyHomePage extends StatefulWidget {
   final Socket channel;
   final MyStream myStreamText;
   final BehaviorSubject<Socket> myStream;
-  MyHomePage({@required this.channel, this.myStream, this.myStreamText});
+  final String login;
+  MyHomePage(
+      {@required this.channel, this.myStream, this.myStreamText, this.login});
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -55,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 itemBuilder: (context, index) {
                   String key = myStreamProvider.keys.elementAt(index);
                   String values = myStreamProvider.values.elementAt(index);
-                  return key.contains('lucas')
+                  return key.contains('${widget.login}')
                       ? BubbleWidget(
                           index: index,
                           myStreamProvider: myStreamProvider,
