@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_aps/screens/home_screen.dart';
 import 'package:flutter_aps/server/chat_room_client.dart';
+import 'package:flutter_aps/socket_connect.dart';
 import 'package:flutter_aps/stream.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart';
@@ -21,6 +22,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController loginController = TextEditingController();
 
+  //Socket channel;
+  final SocketConnect connectSocket = SocketConnect();
+
   Stream broadcastStream;
   BehaviorSubject<Socket> s = BehaviorSubject<Socket>();
 
@@ -36,6 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
     // TODO: implement initState
     super.initState();
     getServer();
+
+    //channel = connectSocket.sock;
   }
 
   @override
@@ -90,6 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             ElevatedButton(
               onPressed: () {
+                //  channel.write('login lucas 123');
                 widget.channel.write('login lucas 123');
                 myStream.login = 'lucas';
                 /* if (getServerResponse() == 'Ok login' ||
@@ -131,35 +138,12 @@ class _LoginScreenState extends State<LoginScreen> {
         };
         var from = values[0];
         var body = split.sublist(1);
-        /* var finalStr = body.reduce((value, element) {
-          return value + ' ' + element;
-        });*/
         print('Login: ' + from.toString() + '-' + body.toString());
-        myStream.addResponse(fromCharCodes);
+        myStream.addResponse2(from, fromCharCodes);
+        myStream.login = 'lucas';
         print(myStream.itemsCount.toString());
       });
     });
     s.add(widget.channel);
-  }
-
-  void getServerResponse() {
-    String response;
-
-    //loginSocket = widget.channel.asBroadcastStream();
-    /*loginSocket.listen((event) {
-      response = String.fromCharCodes(event).trim();
-      print(response);
-    });*/
-
-    /* loginSocket.asBroadcastStream().listen((event) {
-      response = String.fromCharCodes(event).trim();
-      print(response);
-    });*/
-    /*loginSocket.listen((event) {
-      response = String.fromCharCodes(event).trim();
-      print(response);
-    });*/
-    // loginSocket.destroy();
-    //return response;
   }
 }

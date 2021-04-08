@@ -1,25 +1,40 @@
-import 'dart:io';
-import 'dart:ui';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
 class MyStream extends ChangeNotifier {
   List<String> _response = [];
+  Map<String, String> clientResponse = {};
   String login = '';
-  var textAlign = TextAlign.left;
+  int index;
+  var textAlign;
 
-  void addResponse(String value) {
-    print('ADD Response: ' + value);
-    if (value.contains('msg')) {
-      print('entrou Align: ' + value);
-      textAlign = TextAlign.right;
+  void addResponse(String value, int indexWidget) {
+    if (value.contains('guest')) {
+      toggleSelected(indexWidget);
       notifyListeners();
     } else {
-      textAlign = TextAlign.left;
       notifyListeners();
     }
     _response.add(value);
     notifyListeners();
+  }
+
+  void addResponse2(String key, String value) {
+    clientResponse[key + getRandString(5)] = value;
+    notifyListeners();
+  }
+
+  String getRandString(int len) {
+    var random = Random.secure();
+    var values = List<int>.generate(len, (i) => random.nextInt(255));
+    return base64UrlEncode(values);
+  }
+
+  void toggleSelected(int indexWidget) {
+    this.index = indexWidget;
+    notifyListeners(); // To rebuild the Widget
   }
 
   int get itemsCount {
