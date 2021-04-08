@@ -45,97 +45,109 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Center(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/lock.png',
-                height: 200,
-                width: 200,
-                fit: BoxFit.cover,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextFormField(
-                  controller: loginController,
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () => node.nextFocus(),
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    labelText: 'User',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                      borderSide: BorderSide(
-                        color: Colors.blue,
-                      ),
-                    ),
+      body: SafeArea(
+        child: Center(
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/lock.png',
+                    height: screenHeight * 0.28,
+                    width: screenWidth * 0.5,
+                    fit: BoxFit.fill,
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 3) {
-                      return 'Digite o usuario';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextFormField(
-                  controller: passwordController,
-                  onEditingComplete: () => node.nextFocus(),
-                  obscureText: true,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                      borderSide: BorderSide(
-                        color: Colors.blue,
-                      ),
-                    ),
+                  SizedBox(
+                    height: screenHeight * 0.05,
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 3) {
-                      return 'Digite uma senha';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              isLogin
-                  ? ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          String userLogin =
-                              loginController.text.trim().toLowerCase();
-                          String userPassword =
-                              passwordController.text.trim().toLowerCase();
-                          signIn(userLogin, userPassword);
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: loginController,
+                      textInputAction: TextInputAction.next,
+                      onEditingComplete: () => node.nextFocus(),
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        labelText: 'User',
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.blue, width: 1.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.length < 3) {
+                          return 'Digite o usuario';
                         }
+                        return null;
                       },
-                      child: Text('Entrar'),
-                    )
-                  : CircularProgressIndicator(),
-            ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.05,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: passwordController,
+                      onEditingComplete: () => node.nextFocus(),
+                      obscureText: true,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.blue, width: 1.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.length < 3) {
+                          return 'Digite uma senha';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.05,
+                  ),
+                  isLogin
+                      ? ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              String userLogin =
+                                  loginController.text.trim().toLowerCase();
+                              String userPassword =
+                                  passwordController.text.trim().toLowerCase();
+                              signIn(userLogin, userPassword);
+                            }
+                          },
+                          child: Text('Entrar'),
+                        )
+                      : CircularProgressIndicator(),
+                ],
+              ),
+            ),
           ),
         ),
       ),
