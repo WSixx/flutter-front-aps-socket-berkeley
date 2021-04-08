@@ -30,66 +30,106 @@ class _MyHomePageState extends State<MyHomePage> {
         Provider.of<MyStream>(context).clientResponse.keys.length;
     var myStreamProvider = Provider.of<MyStream>(context).clientResponse;
     return Scaffold(
+      backgroundColor: Colors.blue[200],
       appBar: AppBar(
         title: Text('ChatRoom'),
         centerTitle: true,
       ),
-      body: Container(
-        padding: EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: Form(
-                child: TextFormField(
-                  controller: _controller,
-                  decoration: InputDecoration(labelText: 'Send a message'),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.all(15),
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(25),
+                      topLeft: Radius.circular(25),
+                      bottomRight: Radius.circular(25),
+                      bottomLeft: Radius.circular(25),
+                    ),
+                  ),
+                  child: ListView.builder(
+                    itemCount: myStreamProviderLength,
+                    itemBuilder: (context, index) {
+                      String key = myStreamProvider.keys.elementAt(index);
+                      String values = myStreamProvider.values.elementAt(index);
+                      return key.contains('${widget.login}')
+                          ? BubbleWidget(
+                              index: index,
+                              myStreamProvider: myStreamProvider,
+                              values: values,
+                              myBubbleAlign: Alignment.topRight,
+                              myTextAlign: TextAlign.right,
+                              myBubbleNip: BubbleNip.rightTop,
+                            )
+                          : BubbleWidget(
+                              index: index,
+                              myStreamProvider: myStreamProvider,
+                              values: values,
+                              myBubbleAlign: Alignment.topLeft,
+                              myTextAlign: TextAlign.left,
+                              myBubbleNip: BubbleNip.leftTop,
+                            );
+                    },
+                  ),
                 ),
-              ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  height: MediaQuery.of(context).size.height * 0.08,
+                  alignment: Alignment.center, // align the row
+                  padding: EdgeInsets.all(15.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white54,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Form(
+                          child: TextFormField(
+                            controller: _controller,
+                            decoration:
+                                InputDecoration(labelText: 'Send a message'),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        iconSize: 35,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        color: Colors.blue,
+                        alignment: Alignment.bottomCenter,
+                        onPressed: _sendMessage,
+                        icon: Icon(Icons.send),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              flex: 5,
-              child: ListView.builder(
-                itemCount: myStreamProviderLength,
-                itemBuilder: (context, index) {
-                  String key = myStreamProvider.keys.elementAt(index);
-                  String values = myStreamProvider.values.elementAt(index);
-                  return key.contains('${widget.login}')
-                      ? BubbleWidget(
-                          index: index,
-                          myStreamProvider: myStreamProvider,
-                          values: values,
-                          myBubbleAlign: Alignment.topRight,
-                          myTextAlign: TextAlign.right,
-                          myBubbleNip: BubbleNip.rightTop,
-                        )
-                      : BubbleWidget(
-                          index: index,
-                          myStreamProvider: myStreamProvider,
-                          values: values,
-                          myBubbleAlign: Alignment.topLeft,
-                          myTextAlign: TextAlign.left,
-                          myBubbleNip: BubbleNip.leftTop,
-                        );
-                },
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _sendMessage,
-        tooltip: 'Send message',
-        child: Icon(Icons.send),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  /* Expanded(
+  child: Form(
+  child: TextFormField(
+  controller: _controller,
+  decoration: InputDecoration(labelText: 'Send a message'),
+  ),
+  ),
+  ),*/
 
   void _sendMessage() {
     if (_controller.text.isNotEmpty) {

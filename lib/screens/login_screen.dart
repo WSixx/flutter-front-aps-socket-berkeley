@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_aps/screens/home_screen.dart';
-import 'package:flutter_aps/server/chat_room_client.dart';
-import 'package:flutter_aps/socket_connect.dart';
 import 'package:flutter_aps/stream.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart';
