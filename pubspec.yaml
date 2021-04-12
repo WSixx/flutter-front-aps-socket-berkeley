@@ -18,6 +18,8 @@ dependencies:
   rxdart: ^0.26.0
   provider: ^5.0.0
   bubble: ^1.2.1
+  desktop_window: ^0.4.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

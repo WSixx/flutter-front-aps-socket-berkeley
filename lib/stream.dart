@@ -2,14 +2,16 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_aps/client_details.dart';
 
 class MyStream extends ChangeNotifier {
   List<String> _response = [];
   List<String> _onlineLogins = [];
   Map<String, String> clientResponse = {};
+  Map<String, List<String>> clientResponse2 = {};
   String login = '';
   bool _isLogin = false;
-  int index;
+  String clientKey;
   var textAlign;
 
   bool get isLogin => _isLogin;
@@ -37,26 +39,28 @@ class MyStream extends ChangeNotifier {
     }
   }
 
-  void addResponse(String value, int indexWidget) {
-    if (value.contains('guest')) {
-      toggleSelected(indexWidget);
-      notifyListeners();
-    } else {}
-    _response.add(value);
-    notifyListeners();
-  }
-
   void addResponse2(String key, String value) {
-    print('Value is:' + value);
-    print('Key is:' + key);
-    //key = '++' + key;
-    print(key.substring(2));
-    if (value.startsWith('++', 0)) {
+    print('ADDREsponse Key: ' + key.substring(2).replaceAll(':', ''));
+    print('ADDREsponse value: ' + value.split(":").last);
+    if (value.startsWith('++', 0) && !onlineLogins.contains(key.substring(2))) {
+      ClientDetails clientDetails = ClientDetails();
       print('é um login');
       onlineLogins.add(key.substring(2));
+      clientDetails.login = key.substring(2);
+      clientDetails.addToResponse(value);
       notifyListeners();
     }
     clientResponse[key + getRandString(5)] = value;
+
+    String myKey = key.substring(2).replaceAll(':', '');
+    String myValue = value.split(":").last;
+
+    if (clientResponse2.isEmpty) {
+      clientResponse2[key] = [myValue.trim()];
+    }
+    clientResponse2.update(myKey, (oldValue) => [myValue.trim()],
+        ifAbsent: () => [value]);
+
     notifyListeners();
   }
 
@@ -64,11 +68,6 @@ class MyStream extends ChangeNotifier {
     var random = Random.secure();
     var values = List<int>.generate(len, (i) => random.nextInt(255));
     return base64UrlEncode(values);
-  }
-
-  void toggleSelected(int indexWidget) {
-    this.index = indexWidget;
-    notifyListeners(); // To rebuild the Widget
   }
 
   int get itemsCount {

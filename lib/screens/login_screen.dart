@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_aps/screens/chat_room_screen.dart';
 import 'package:flutter_aps/screens/home_screen.dart';
@@ -20,6 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController loginController = TextEditingController();
 
+  String _windowSize = 'Unknown';
+
   //Socket channel;
   Stream broadcastStream;
   BehaviorSubject<Socket> s = BehaviorSubject<Socket>();
@@ -38,6 +41,15 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     getServer();
+    setWindowsSize();
+  }
+
+  Future<void> setWindowsSize() async {
+    if (Platform.isWindows) {
+      await DesktopWindow.setWindowSize(Size(400, 380));
+      await DesktopWindow.setMaxWindowSize(Size(512, 512));
+      await DesktopWindow.setFullScreen(false);
+    }
   }
 
   @override
@@ -154,9 +166,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void getServer() {
     s.stream.listen((event) {
+      // MyStream myStream = MyStream();
       myStream = Provider.of<MyStream>(context, listen: false);
       event.listen((event) {
-        String fromCharCodes = String.fromCharCodes(event)
+        String fromCharCodes;
+        fromCharCodes = String.fromCharCodes(event)
             .trim()
             .replaceAll('[', '')
             .replaceAll(']', ': ');
