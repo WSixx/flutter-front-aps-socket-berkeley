@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_aps/emoticon.dart';
 import 'package:flutter_aps/stream.dart';
 import 'package:flutter_aps/widgets/bubble_widget.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,8 @@ class ChatRoomScreen extends StatefulWidget {
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   TextEditingController _controller = TextEditingController();
   var retorno = [];
+
+  Emoticon _emoticon = Emoticon();
 
   ScrollController _scrollController;
 
@@ -124,18 +127,27 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     Flexible(
                       child: Form(
                         child: TextFormField(
-                          controller: _controller,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            contentPadding: EdgeInsets.only(
-                                left: 15, bottom: 11, top: 11, right: 15),
-                            hintText: "Type Something",
-                          ),
-                        ),
+                            controller: _controller,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              contentPadding: EdgeInsets.only(
+                                  left: 15, bottom: 11, top: 11, right: 15),
+                              hintText: "Type Something",
+                            ),
+                            onChanged: (text) {
+                              text = _emoticon.checkEmoticonText(text);
+                              print(text);
+                              _controller.text = text;
+                              _controller.selection =
+                                  TextSelection.fromPosition(
+                                TextPosition(offset: _controller.text.length),
+                              );
+                              //_controller.text = text;
+                            }),
                       ),
                     ),
                     IconButton(
@@ -179,7 +191,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         print('V:' + v);
         //length++;
         if (v.endsWith(':$clientLogin')) {
-          print('Tem apulo');
           retorno.add(v.toString());
           length++;
           // length++;
@@ -197,7 +208,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       if (k.contains('++$client') && v.contains('++$client')) {
         retorno.add(v.toString());
         length++;
-      } else if (k.contains('++lucas')) {
+      } else if (k.contains('++${widget.login}')) {
         //length++;
         if (v.endsWith(':$client')) {
           print('Tem apulo');

@@ -1,5 +1,6 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_aps/emoticon.dart';
 import 'package:flutter_aps/stream.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
