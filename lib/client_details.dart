@@ -1,8 +1,6 @@
+import 'package:flutter_aps/stream.dart';
+
 class ClientDetails {
   String login = '';
-  List<String> clientResponse = [];
-
-  void addToResponse(value) {
-    clientResponse.add(value);
-  }
+  Map<String, String> clientResponse = {};
 }

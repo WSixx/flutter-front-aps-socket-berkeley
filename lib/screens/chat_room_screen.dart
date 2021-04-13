@@ -28,9 +28,7 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   TextEditingController _controller = TextEditingController();
-  MyStream myStreamProvider2;
-  int lenght = 0;
-  var retorno;
+  var retorno = [];
 
   ScrollController _scrollController;
 
@@ -45,8 +43,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var myStreamProviderLength =
-        Provider.of<MyStream>(context).clientResponse.keys.length;
     var myStreamProvider = Provider.of<MyStream>(context).clientResponse;
     var myStreamProvider2 = Provider.of<MyStream>(context);
     return Container(
@@ -86,20 +82,24 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ),
                 child: ListView.builder(
                   controller: _scrollController,
-                  itemCount: test(myStreamProvider, widget.clientLogin),
+                  itemCount: getLength(myStreamProvider, widget.clientLogin),
                   itemBuilder: (context, index) {
-                    var opa = word(myStreamProvider, index, widget.clientLogin);
+                    var opa = getBodyMessage(
+                        myStreamProvider, index, widget.clientLogin);
                     return opa.contains('++${widget.clientLogin}')
                         ? BubbleWidget(
                             index: index,
-                            values: opa,
+                            color: Theme.of(context).primaryColor,
+                            values: opa.replaceAll('++', ''),
                             myBubbleAlign: Alignment.topLeft,
                             myTextAlign: TextAlign.left,
                             myBubbleNip: BubbleNip.leftTop,
                           )
                         : BubbleWidget(
                             index: index,
-                            values: opa,
+                            color: Color(0xFF208AAE),
+                            values:
+                                opa.replaceAll(':${widget.clientLogin}', ''),
                             myBubbleAlign: Alignment.topRight,
                             myTextAlign: TextAlign.right,
                             myBubbleNip: BubbleNip.rightTop,
@@ -167,54 +167,51 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     );
   }
 
-  int test(var myMap, var client) {
+  int getLength(var myMap, var clientLogin) {
     var length = 0;
     myMap.forEach((k, v) {
-      if (k.contains('++$client')) {
+      if (k.contains('++$clientLogin')) {
         length++;
       }
     });
     myMap.forEach((k, v) {
-      if (k.contains('++lucas')) {
-        print('Tem lucas');
-        length++;
+      if (k.contains('++${widget.login}')) {
+        print('V:' + v);
+        //length++;
+        if (v.endsWith(':$clientLogin')) {
+          print('Tem apulo');
+          retorno.add(v.toString());
+          length++;
+          // length++;
+        }
       }
     });
+    print('Lenght: ' + length.toString());
     return length;
   }
 
-  String word(var myMap, int index, var client) {
+  String getBodyMessage(var myMap, int index, var client) {
     var length = 0;
     retorno = [];
     myMap.forEach((k, v) {
       if (k.contains('++$client') && v.contains('++$client')) {
         retorno.add(v.toString());
         length++;
-        print(length);
       } else if (k.contains('++lucas')) {
-        retorno.add(v.toString());
+        //length++;
+        if (v.endsWith(':$client')) {
+          print('Tem apulo');
+          retorno.add(v.toString());
+          // length++;
+        }
       }
     });
 
-    /*  myMap.forEach((k, v) {
-      if (k.contains('++lucas')) {
-        print('Tem lucas');
-        retorno.add(v.toString());
-        print('lucas ret: ' + retorno.toString());
-      }
-    });*/
-
+    print('IndexBody: ' + index.toString());
+    print('LenghtBody: ' + length.toString());
+    print('LenghtRetorno: ' + retorno.length.toString());
     return retorno[index];
   }
-
-  /* Expanded(
-  child: Form(
-  child: TextFormField(
-  controller: _controller,
-  decoration: InputDecoration(labelText: 'Send a message'),
-  ),
-  ),
-  ),*/
 
   void sendMessage(var provider) {
     if (_controller.text.isNotEmpty) {
@@ -226,13 +223,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       setState(() {
         String finalStr = _controller.text.trim();
         final split = finalStr.split(' ');
-        //var body = split.sublist(1);
         var values = split.reduce((value, element) {
           return value + ' ' + element;
         });
-        print('Body is: ' + values);
-        //myStreamProvider.addResponse2(myStreamProvider.login, values);
-        myStreamProvider.addResponse2('++' + provider.login, values);
+        myStreamProvider.addResponse2(
+            '++' + provider.login, values + ':${widget.clientLogin}');
+        //myStreamProvider.addResponse2('++' + provider.login, values);
       });
       _controller.clear();
     }
@@ -240,7 +236,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   @override
   void dispose() {
-    //  widget.channel.close();
     super.dispose();
   }
 }

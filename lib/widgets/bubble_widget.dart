@@ -11,6 +11,7 @@ class BubbleWidget extends StatelessWidget {
   final myBubbleAlign;
   final myBubbleNip;
   final values;
+  final color;
   final clientLogin;
 
   const BubbleWidget(
@@ -21,7 +22,8 @@ class BubbleWidget extends StatelessWidget {
       this.values,
       this.myBubbleAlign,
       this.myBubbleNip,
-      this.clientLogin})
+      this.clientLogin,
+      this.color})
       : super(key: key);
 
   @override
@@ -30,7 +32,7 @@ class BubbleWidget extends StatelessWidget {
     String formattedDate = DateFormat('dd/MM – kk:mm').format(timeNow);
     return Container(
       child: Bubble(
-        color: Color.fromRGBO(212, 234, 244, 1.0),
+        color: color,
         elevation: 2,
         alignment: myBubbleAlign,
         nipWidth: 8,
@@ -42,12 +44,15 @@ class BubbleWidget extends StatelessWidget {
             Text(
               '$values',
               textAlign: myTextAlign,
-              style: TextStyle(fontSize: 18.0),
+              style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             Text(
               '$formattedDate',
               textAlign: myTextAlign,
-              style: TextStyle(fontSize: 10.0, color: Colors.grey),
+              style: TextStyle(
+                  fontSize: 10.0,
+                  color: Colors.white54,
+                  fontWeight: FontWeight.w700),
             ),
           ],
         ), /*child: Text(
@@ -60,12 +65,12 @@ class BubbleWidget extends StatelessWidget {
   }
 
   String test(var myMap, var retorno, int index, var client) {
-    var lenght = 0;
+    var length = 0;
     myMap.forEach((k, v) {
       if (k.contains('++$client') && v.contains('++$client')) {
         retorno.add(v.toString());
-        lenght++;
-        print(lenght);
+        length++;
+        print(length);
         print('geust ret: ' + retorno.toString());
       } else {
         print('geust not ret: ' + retorno.toString());

@@ -21,9 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController loginController = TextEditingController();
 
-  String _windowSize = 'Unknown';
-
-  //Socket channel;
   Stream broadcastStream;
   BehaviorSubject<Socket> s = BehaviorSubject<Socket>();
 
@@ -31,11 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   MyStream myStream;
   bool isLogin = true;
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -166,7 +158,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void getServer() {
     s.stream.listen((event) {
-      // MyStream myStream = MyStream();
       myStream = Provider.of<MyStream>(context, listen: false);
       event.listen((event) {
         String fromCharCodes;
@@ -180,8 +171,6 @@ class _LoginScreenState extends State<LoginScreen> {
           for (int i = 0; i < split.length; i++) i: split[i]
         };
         var from = values[0];
-        var body = split.sublist(1);
-        print('Login: ' + from.toString() + '-' + body.toString());
         if (from.contains('Ok')) {
           myStream.isLogin = true;
         }
@@ -191,18 +180,6 @@ class _LoginScreenState extends State<LoginScreen> {
     s.add(widget.channel);
   }
 
-  /*void navigator(String userLogin) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatRoomScreen(
-          channel: widget.channel,
-          myStream: s,
-          login: userLogin,
-        ),
-      ),
-    );
-  }*/
   void navigator(String userLogin) {
     Navigator.pushReplacement(
       context,
@@ -223,7 +200,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     Future.delayed(Duration(seconds: 2)).then((_) {
       if (myStream.singIn()) {
-        print('Entrou True');
         myStream.login = '$userLogin';
         navigator(userLogin);
       } else {

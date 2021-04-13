@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:flutter_aps/screens/chat_room_screen.dart';
 import 'package:flutter_aps/screens/login_screen.dart';
 import 'package:flutter_aps/stream.dart';
 import 'package:provider/provider.dart';
-import 'package:rxdart/subjects.dart';
 
 void main() async {
-  Socket sock = await Socket.connect('192.168.0.33', 3320);
+ Socket sock = await Socket.connect('192.168.0.33', 3320);
   runApp(
     ChangeNotifierProvider(
       create: (context) => MyStream(),
