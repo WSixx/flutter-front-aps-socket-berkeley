@@ -138,6 +138,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                   left: 15, bottom: 11, top: 11, right: 15),
                               hintText: "Type Something",
                             ),
+                            textCapitalization: TextCapitalization.sentences,
+                            onFieldSubmitted: (text) {
+                              sendMessage(myStreamProvider2);
+                              scrollToEnd();
+                            },
                             onChanged: (text) {
                               text = _emoticon.checkEmoticonText(text);
                               print(text);
@@ -146,7 +151,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                   TextSelection.fromPosition(
                                 TextPosition(offset: _controller.text.length),
                               );
-                              //_controller.text = text;
                             }),
                       ),
                     ),
@@ -157,15 +161,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       alignment: Alignment.bottomCenter,
                       onPressed: () {
                         sendMessage(myStreamProvider2);
-                        setState(() {
-                          SchedulerBinding.instance.addPostFrameCallback((_) {
-                            _scrollController.animateTo(
-                              _scrollController.position.maxScrollExtent,
-                              duration: const Duration(milliseconds: 10),
-                              curve: Curves.easeOut,
-                            );
-                          });
-                        });
+                        scrollToEnd();
                       },
                       icon: Icon(Icons.send),
                     ),
@@ -177,6 +173,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         ),
       ),
     );
+  }
+
+  void scrollToEnd() {
+    setState(() {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 10),
+          curve: Curves.easeOut,
+        );
+      });
+    });
   }
 
   int getLength(var myMap, var clientLogin) {
@@ -197,7 +205,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         }
       }
     });
-    print('Lenght: ' + length.toString());
     return length;
   }
 
@@ -211,16 +218,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       } else if (k.contains('++${widget.login}')) {
         //length++;
         if (v.endsWith(':$client')) {
-          print('Tem apulo');
           retorno.add(v.toString());
           // length++;
         }
       }
     });
 
-    print('IndexBody: ' + index.toString());
-    print('LenghtBody: ' + length.toString());
-    print('LenghtRetorno: ' + retorno.length.toString());
     return retorno[index];
   }
 

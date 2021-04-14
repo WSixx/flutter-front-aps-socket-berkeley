@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_aps/screens/chat_room_screen.dart';
 import 'package:flutter_aps/screens/home_screen.dart';
 import 'package:flutter_aps/stream.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart';
+import 'package:simple_rc4/simple_rc4.dart';
 
 class LoginScreen extends StatefulWidget {
   final Socket channel;
@@ -161,10 +164,22 @@ class _LoginScreenState extends State<LoginScreen> {
       myStream = Provider.of<MyStream>(context, listen: false);
       event.listen((event) {
         String fromCharCodes;
-        fromCharCodes = String.fromCharCodes(event)
+        /* fromCharCodes = String.fromCharCodes(event)
             .trim()
             .replaceAll('[', '')
-            .replaceAll(']', ': ');
+            .replaceAll(']', ': '); */
+        /*fromCharCodes =
+            utf8.decode(event).trim().replaceAll('[', '').replaceAll(
+                  ']',
+                  ': ',
+                );*/
+        //print('Event: ' + String.fromCharCodes(event));
+
+        fromCharCodes =
+            utf8.decode(event).trim().replaceAll('[', '').replaceAll(
+                  ']',
+                  ': ',
+                );
 
         final split = fromCharCodes.split(' ');
         final values = <int, String>{

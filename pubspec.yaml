@@ -20,6 +20,8 @@ dependencies:
   bubble: ^1.2.1
   desktop_window: ^0.4.0
   intl: ^0.17.0
+  characters: ^1.1.0
+  simple_rc4: ^0.1.6
 
 dev_dependencies:
   flutter_test:
@@ -31,10 +33,6 @@ flutter:
 
   assets:
     - assets/images/lock.png
-  #   - images/a_dot_ham.jpeg
-
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware.
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
