@@ -1,22 +1,19 @@
 import 'dart:io';
-
 import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_aps/screens/chat_room_screen.dart';
-import 'package:flutter_aps/stream.dart';
+import 'package:flutter_aps/providers/stream.dart';
+import 'package:flutter_aps/views/chat_room_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class HomeScreen extends StatefulWidget {
   final Socket channel;
-  final MyStream myStreamText;
   final BehaviorSubject<Socket> myStream;
   final String login;
 
   const HomeScreen(
       {Key key,
       @required this.channel,
-      @required this.myStreamText,
       @required this.myStream,
       @required this.login})
       : super(key: key);
@@ -40,12 +37,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var myStreamProviderLength =
+    final myStreamProviderLength =
         Provider.of<MyStream>(context).onlineLogins.length;
-    var myStreamProviderNames = Provider.of<MyStream>(context).onlineLogins;
+    final myStreamProviderNames = Provider.of<MyStream>(context).onlineLogins;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Screen'),
+        title: const Text('Chat Screen'),
         centerTitle: true,
       ),
       body: Padding(
@@ -59,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     width: 200,
                     child: Column(
                       children: [
@@ -68,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           radius: 20,
                           child: IconButton(
                             padding: EdgeInsets.zero,
-                            icon: Icon(Icons.add),
+                            icon: const Icon(Icons.add),
                             color: Colors.white,
                             onPressed: () {},
                           ),
@@ -95,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Container(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: Theme.of(context).primaryColor,
@@ -103,16 +100,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 50,
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.person,
                             color: Colors.white,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Text(
-                            '${myStreamProviderNames[index].toUpperCase()}',
-                            style: TextStyle(color: Colors.white),
+                            myStreamProviderNames[index].toUpperCase(),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ],
                       ),

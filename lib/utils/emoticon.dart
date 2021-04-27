@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class Emoticon {
   String checkEmoticonText(String text) {
-    String textWithEmoji;
+    String textWithEmote;
     if (text.contains('(:')) {
-      textWithEmoji = text.replaceAll('(::))', '😀');
-      return textWithEmoji;
+      textWithEmote = text.replaceAll('(::))', '😀');
+      return textWithEmote;
     }
     return text;
   }

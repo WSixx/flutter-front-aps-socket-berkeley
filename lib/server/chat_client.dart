@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+
 import 'chat_room_client.dart';
 
 class ChatClient {
@@ -8,7 +10,7 @@ class ChatClient {
   int _port;
   final List<String> _login = [];
 
-  get socket {
+  Socket get socket {
     return _socket;
   }
 
@@ -16,7 +18,6 @@ class ChatClient {
     _socket = s;
     _address = _socket.remoteAddress.address;
     _port = _socket.remotePort;
-
     _socket.listen(messageHandler,
         onError: errorHandler, onDone: finishedHandler);
   }
@@ -26,24 +27,24 @@ class ChatClient {
     final values = <int, String>{
       for (int i = 1; i < split.length; i++) i: split[i]
     };
-    var sendTo = values[1];
-    var body = split.sublist(2);
-    var finalStr = body.reduce((value, element) {
-      return value + ' ' + element;
+    final sendTo = values[1];
+    final body = split.sublist(2);
+    final finalStr = body.reduce((value, element) {
+      return '$value $element';
     });
-    for (var c in clientsChatRoom) {
+    for (final c in clientsChatRoom) {
       if (c != client) {
-        print(c._login.length);
+        debugPrint(c._login.length.toString());
         if (c._login.contains(sendTo)) {
-          c.write(finalStr + '\n');
+          c.write('$finalStr\n');
         }
       }
     }
   }
 
-  void messageHandler(dynamic data) {
-    var message = String.fromCharCodes(data).trim();
-    print('login is: ' + _login.toString());
+  void messageHandler(List<int> data) {
+    final message = String.fromCharCodes(data).trim();
+    debugPrint('login is: $_login');
     if (_login.isNotEmpty) {
       if ('logoff' == message || 'quit' == message) {
         write('Usuario deslogado');
@@ -55,20 +56,19 @@ class ChatClient {
     }
     if (_login.isNotEmpty) {
       if (message.startsWith('msg')) {
-        distributeMessage(this, '${message.replaceRange(0, 3, '')}');
+        distributeMessage(this, message.replaceRange(0, 3, ''));
       }
     }
-    //
   }
 
-  void errorHandler(error) {
-    print('$_address:$_port Error: $error');
+  void errorHandler(dynamic error) {
+    debugPrint('$_address:$_port Error: $error');
     removeClient(this);
     _socket.close();
   }
 
   void finishedHandler() {
-    print('$_address:$_port Disconnected');
+    debugPrint('$_address:$_port Disconnected');
     removeClient(this);
     _socket.close();
   }
@@ -84,30 +84,28 @@ class ChatClient {
   void handleLogoff(ChatClient chatClient) {
     removeClient(this);
     _login.clear();
-    //  var onlineMsg = 'offline ' + login + '\n';
-    // distributeMessage(chatClient, 'Fui deslogado');
   }
 
   void handleLogin(ChatClient chatClient, String message) {
-    var client = chatClient._socket;
+    final client = chatClient._socket;
     final split = message.split(' ');
     final values = <int, String>{
       for (int i = 1; i < split.length; i++) i: split[i]
     };
-    var login = values[1];
-    var password = values[2];
+    final login = values[1];
+    final password = values[2];
     if ((login == 'lucas' && password == '123') ||
         (login == 'guest' && password == 'guest') ||
         (login == 'paulo' && password == 'paulo')) {
-      var msg = 'Ok login';
+      const msg = 'Ok login';
       write(msg);
       _login.add(login);
-      print('Usuario logado com  sucesso ' + login);
+      debugPrint('Usuario logado com  sucesso $login');
       distributeMessage(chatClient, 'Usuario: $login logado');
     } else {
-      var msg = 'Error login\n';
+      const msg = 'Error login\n';
       client.write(msg);
-      print('Login Failed for: ' + login);
+      debugPrint('Login Failed for: $login');
     }
   }
 

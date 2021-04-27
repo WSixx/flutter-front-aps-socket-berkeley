@@ -1,20 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_aps/screens/home_screen.dart';
-import 'package:flutter_aps/stream.dart';
+import 'package:flutter_aps/providers/stream.dart';
+import 'package:flutter_aps/utils/colors.dart';
+import 'package:flutter_aps/views/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:simple_rc4/simple_rc4.dart';
 
 class LoginScreen extends StatefulWidget {
   final Socket channel;
-  LoginScreen({@required this.channel});
+  const LoginScreen({@required this.channel});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -41,8 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> setWindowsSize() async {
     if (Platform.isWindows) {
-      await DesktopWindow.setWindowSize(Size(400, 380));
-      await DesktopWindow.setMaxWindowSize(Size(512, 512));
+      await DesktopWindow.setWindowSize(const Size(400, 380));
+      await DesktopWindow.setMaxWindowSize(const Size(512, 512));
       await DesktopWindow.setFullScreen(false);
     }
   }
@@ -79,14 +77,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       autocorrect: false,
                       decoration: InputDecoration(
                         labelText: 'User',
-                        enabledBorder: OutlineInputBorder(
+                        enabledBorder: const OutlineInputBorder(
                           borderSide:
                               BorderSide(color: Colors.blue, width: 1.0),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
+                          borderSide: const BorderSide(
+                            color: MyColors.blue,
                           ),
                         ),
                       ),
@@ -112,13 +110,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       autocorrect: false,
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.blue, width: 1.0),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Colors.blue,
                           ),
                         ),
@@ -136,20 +133,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: screenHeight * 0.05,
                   ),
-                  isLogin
-                      ? ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState.validate()) {
-                              String userLogin =
-                                  loginController.text.trim().toLowerCase();
-                              String userPassword =
-                                  passwordController.text.trim().toLowerCase();
-                              signIn(userLogin, userPassword);
-                            }
-                          },
-                          child: Text('Entrar'),
-                        )
-                      : CircularProgressIndicator(),
+                  if (isLogin)
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          final String userLogin =
+                              loginController.text.trim().toLowerCase();
+                          final String userPassword =
+                              passwordController.text.trim().toLowerCase();
+                          signIn(userLogin, userPassword);
+                        }
+                      },
+                      child: const Text('Entrar'),
+                    )
+                  else
+                    const CircularProgressIndicator(),
                 ],
               ),
             ),
@@ -164,17 +162,6 @@ class _LoginScreenState extends State<LoginScreen> {
       myStream = Provider.of<MyStream>(context, listen: false);
       event.listen((event) {
         String fromCharCodes;
-        /* fromCharCodes = String.fromCharCodes(event)
-            .trim()
-            .replaceAll('[', '')
-            .replaceAll(']', ': '); */
-        /*fromCharCodes =
-            utf8.decode(event).trim().replaceAll('[', '').replaceAll(
-                  ']',
-                  ': ',
-                );*/
-        //print('Event: ' + String.fromCharCodes(event));
-
         fromCharCodes =
             utf8.decode(event).trim().replaceAll('[', '').replaceAll(
                   ']',
@@ -185,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
         final values = <int, String>{
           for (int i = 0; i < split.length; i++) i: split[i]
         };
-        var from = values[0];
+        final from = values[0];
         if (from.contains('Ok')) {
           myStream.isLogin = true;
         }
@@ -208,14 +195,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void signIn(String userLogin, String userPassword) async {
+  Future<void> signIn(String userLogin, String userPassword) async {
     widget.channel.write('login $userLogin $userPassword');
     setState(() {
       isLogin = false;
     });
-    Future.delayed(Duration(seconds: 2)).then((_) {
+    Future.delayed(const Duration(seconds: 2)).then((_) {
       if (myStream.singIn()) {
-        myStream.login = '$userLogin';
+        myStream.login = userLogin;
         navigator(userLogin);
       } else {
         setState(() {

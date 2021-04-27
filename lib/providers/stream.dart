@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class MyStream extends ChangeNotifier {
-  List<String> _response = [];
+  final List<String> _response = [];
   List<String> _onlineLogins = [];
   Map<String, String> clientResponse = {};
   Map<String, List<String>> clientResponse2 = {};
   String login = '';
   bool _isLogin = false;
-  var textAlign;
+  TextAlign textAlign;
 
   bool get isLogin => _isLogin;
 
@@ -39,7 +40,7 @@ class MyStream extends ChangeNotifier {
     }
     clientResponse[key + getRandString(5)] = value;
 
-    String myValue = value.split(":").last;
+    final String myValue = value.split(":").last;
 
     if (clientResponse2.isEmpty) {
       clientResponse2[key] = [myValue.trim()];
@@ -49,8 +50,8 @@ class MyStream extends ChangeNotifier {
   }
 
   String getRandString(int len) {
-    var random = Random.secure();
-    var values = List<int>.generate(len, (i) => random.nextInt(255));
+    final random = Random.secure();
+    final values = List<int>.generate(len, (i) => random.nextInt(255));
     return base64UrlEncode(values);
   }
 
