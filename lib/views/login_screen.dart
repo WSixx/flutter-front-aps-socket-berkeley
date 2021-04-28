@@ -22,13 +22,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController loginController = TextEditingController();
 
-  Stream broadcastStream;
-  BehaviorSubject<Socket> s = BehaviorSubject<Socket>();
+  BehaviorSubject<Socket> myBehaviorSubjectSocket = BehaviorSubject<Socket>();
 
   final _formKey = GlobalKey<FormState>();
 
-  MyStream myStream;
+  MyChatClientStream myStream;
   bool isLogin = true;
+
+  @override
+  void dispose() {
+    super.dispose();
+    loginController.dispose();
+    passwordController.dispose();
+  }
 
   @override
   void initState() {
@@ -78,8 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: InputDecoration(
                         labelText: 'User',
                         enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.blue, width: 1.0),
+                          borderSide: BorderSide(color: MyColors.blue),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0),
@@ -111,12 +116,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue),
+                          borderSide: BorderSide(color: MyColors.blue),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0),
                           borderSide: const BorderSide(
-                            color: Colors.blue,
+                            color: MyColors.blue,
                           ),
                         ),
                       ),
@@ -158,8 +163,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void getServer() {
-    s.stream.listen((event) {
-      myStream = Provider.of<MyStream>(context, listen: false);
+    myBehaviorSubjectSocket.stream.listen((event) {
+      myStream = Provider.of<MyChatClientStream>(context, listen: false);
       event.listen((event) {
         String fromCharCodes;
         fromCharCodes =
@@ -176,10 +181,10 @@ class _LoginScreenState extends State<LoginScreen> {
         if (from.contains('Ok')) {
           myStream.isLogin = true;
         }
-        myStream.addResponse2(from, fromCharCodes);
+        myStream.addResponseToChatRoom(from, fromCharCodes);
       });
     });
-    s.add(widget.channel);
+    myBehaviorSubjectSocket.add(widget.channel);
   }
 
   void navigator(String userLogin) {
@@ -188,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
       MaterialPageRoute(
         builder: (context) => HomeScreen(
           channel: widget.channel,
-          myStream: s,
+          myStream: myBehaviorSubjectSocket,
           login: userLogin,
         ),
       ),

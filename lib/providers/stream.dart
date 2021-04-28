@@ -3,14 +3,11 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class MyStream extends ChangeNotifier {
-  final List<String> _response = [];
-  List<String> _onlineLogins = [];
+class MyChatClientStream extends ChangeNotifier {
+  final List<String> _onlineLoginList = [];
   Map<String, String> clientResponse = {};
-  Map<String, List<String>> clientResponse2 = {};
   String login = '';
   bool _isLogin = false;
-  TextAlign textAlign;
 
   bool get isLogin => _isLogin;
 
@@ -19,11 +16,7 @@ class MyStream extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<String> get onlineLogins => _onlineLogins;
-
-  set onlineLogins(List<String> value) {
-    _onlineLogins = value;
-  }
+  List<String> get onlineLoginList => _onlineLoginList;
 
   bool singIn() {
     if (isLogin == true) {
@@ -33,35 +26,20 @@ class MyStream extends ChangeNotifier {
     }
   }
 
-  void addResponse2(String key, String value) {
-    if (value.startsWith('++', 0) && !onlineLogins.contains(key.substring(2))) {
-      onlineLogins.add(key.substring(2));
+  void addResponseToChatRoom(String key, String value) {
+    if (value.startsWith('++', 0) &&
+        !onlineLoginList.contains(key.substring(2))) {
+      onlineLoginList.add(key.substring(2));
       notifyListeners();
     }
     clientResponse[key + getRandString(5)] = value;
-
-    final String myValue = value.split(":").last;
-
-    if (clientResponse2.isEmpty) {
-      clientResponse2[key] = [myValue.trim()];
-    }
-
     notifyListeners();
   }
 
-  String getRandString(int len) {
+  String getRandString(int lengthOfRandomString) {
     final random = Random.secure();
-    final values = List<int>.generate(len, (i) => random.nextInt(255));
-    return base64UrlEncode(values);
-  }
-
-  int get itemsCount {
-    return response.length;
-  }
-
-  List<String> get response => _response;
-
-  List<String> getServerResponse() {
-    return _response;
+    final randomString =
+        List<int>.generate(lengthOfRandomString, (i) => random.nextInt(255));
+    return base64UrlEncode(randomString);
   }
 }

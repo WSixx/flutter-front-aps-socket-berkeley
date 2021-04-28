@@ -1,5 +1,6 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_aps/utils/colors.dart';
 import 'package:intl/intl.dart';
 
 class BubbleWidget extends StatelessWidget {
@@ -37,15 +38,19 @@ class BubbleWidget extends StatelessWidget {
           Text(
             msg,
             textAlign: myTextAlign,
-            style: const TextStyle(fontSize: 18.0, color: Colors.white),
+            style: const TextStyle(
+              fontSize: 18.0,
+              color: MyColors.white,
+            ),
           ),
           Text(
             formattedDate,
             textAlign: myTextAlign,
             style: const TextStyle(
-                fontSize: 10.0,
-                color: Colors.white54,
-                fontWeight: FontWeight.w700),
+              fontSize: 10.0,
+              color: MyColors.white54,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ],
       ),

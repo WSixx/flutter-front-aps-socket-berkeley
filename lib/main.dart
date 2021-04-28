@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_aps/providers/stream.dart';
 import 'package:flutter_aps/utils/colors.dart';
@@ -10,7 +9,7 @@ Future<void> main() async {
   final Socket sock = await Socket.connect('192.168.0.33', 3320);
   runApp(
     ChangeNotifierProvider(
-      create: (context) => MyStream(),
+      create: (context) => MyChatClientStream(),
       child: MyApp(sock),
     ),
   );

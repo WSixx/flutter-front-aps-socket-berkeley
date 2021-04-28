@@ -1,5 +1,5 @@
 name: flutter_aps
-description: A new Flutter application.
+description: APS DE REDES.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -9,17 +9,15 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+
+  bubble: ^1.2.1
+  cupertino_icons: ^1.0.2
+  desktop_window: ^0.4.0
   flutter:
     sdk: flutter
-
-  cupertino_icons: ^1.0.2
-  rxdart: ^0.26.0
-  provider: ^5.0.0
-  bubble: ^1.2.1
-  desktop_window: ^0.4.0
   intl: ^0.17.0
-  characters: ^1.1.0
-  simple_rc4: ^0.1.6
+  provider: ^5.0.0
+  rxdart: ^0.26.0
 
 dev_dependencies:
   flutter_test:

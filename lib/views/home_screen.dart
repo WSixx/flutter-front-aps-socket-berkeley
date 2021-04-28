@@ -38,8 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final myStreamProviderLength =
-        Provider.of<MyStream>(context).onlineLogins.length;
-    final myStreamProviderNames = Provider.of<MyStream>(context).onlineLogins;
+        Provider.of<MyChatClientStream>(context).onlineLoginList.length;
+    final myStreamProviderNames =
+        Provider.of<MyChatClientStream>(context).onlineLoginList;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chat Screen'),
@@ -84,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(
                           builder: (context) => ChatRoomScreen(
                             channel: widget.channel,
-                            myStream: widget.myStream,
+                            myBehaviorSubjectSocket: widget.myStream,
                             login: widget.login,
                             clientLogin: myStreamProviderNames[index],
                           ),
