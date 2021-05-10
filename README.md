@@ -12,7 +12,7 @@ sockets de Berkeley, ou componentes derivados destes
 
 ### Projeto feito Utilizando Dart e Flutter como front-end
 
-Resolvi escolher Dart pois como uma linguagem mais nova que Java e menos utilizada foi um desafio maior fazer essa atividade, encontrado poucos materiaais que ajudassem sobre comunicação de rede utilizando Berkeley Sockets. Então por um desafio maior decidi escolher Dart para alem do desafio usar uma linguagem que ue gosto. Ainda utilizei Flutter para Windows pela primeira vez, aumentando meu desafio
+Resolvi escolher Dart pois como uma linguagem mais nova que Java e menos utilizada foi um desafio maior fazer essa atividade, encontrado poucos materiais que ajudassem sobre comunicação de rede utilizando Berkeley Sockets. Então por um desafio maior decidi escolher Dart para alem do desafio usar uma linguagem que ue gosto. Ainda utilizei Flutter para Windows pela primeira vez, aumentando meu desafio
 
 ## Links
 
